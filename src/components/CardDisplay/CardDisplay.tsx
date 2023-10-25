@@ -39,7 +39,7 @@ const TwoCardsInRow = () => {
       </CardContainer>
       <ToastContainer />
 
-      {cardsLeft !== 0 && (
+      {cardsLeft !== 0 ? (
         <ButtonsWrapper>
           <button className="draw-button" onClick={handleOnDraw}>
             Draw
@@ -48,8 +48,7 @@ const TwoCardsInRow = () => {
             New Deck
           </button>
         </ButtonsWrapper>
-      )}
-      {cardsLeft === 0 && (
+      ) : (
         <h1>{`Suit Match ${suitMatch}, Value Match ${valueMatch}`}</h1>
       )}
     </Body>
