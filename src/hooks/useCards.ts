@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { drawCards } from "@/Service/drawCards";
 import { toast } from "react-toastify";
 
 export function useCard(testCard: any) {
