@@ -1,12 +1,17 @@
 "use client";
-import { useCard } from "@/hooks/useCard";
 import React, { useEffect, useState } from "react";
-
-import { Card, CardContainer } from "./CardDisplay.styles";
-import * as Styled from "./CardDisplay.styles";
 import { drawCards } from "@/Service/drawCards";
-
 import { getNewDeck } from "@/Service/newDeck";
+import {
+  Card,
+  CardContainer,
+  Body,
+  ButtonsWrapper,
+} from "./CardDisplay.styles";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Noto_Sans_Osmanya } from "next/font/google";
+import { isFunction } from "util";
 
 interface CardProps {
   image: any;
@@ -15,46 +20,55 @@ interface CardProps {
 const CardComponent: React.FC<CardProps> = ({ image }) => {
   return (
     <Card>
-      <img
-        src={image ?? "https://deckofcardsapi.com/static/img/back.png"}
-        alt={image}
-        width={200}
-        height={300}
-      />
+      <img src={image} alt={image} width={200} height={300} />
     </Card>
   );
 };
 
-// Component that displays two cards side by side
-const TwoCardsInRow = (shuffledDeck: any) => {
-  const {
-    shuffledDeck: { deck_id },
-  } = shuffledDeck;
-
-  const [cardData, setCardData] = useState<any[]>([]);
-  const [testCard, setTestCard] = useState<any>({
+const TwoCardsInRow = () => {
+  const [testCard, setTestCard] = useState({
     cardOne: {
-      code: "",
+      suit: "",
       value: "",
       image: "https://deckofcardsapi.com/static/img/back.png",
     },
     cardTwo: {
-      code: "",
+      suit: "",
       value: "",
       image: "https://deckofcardsapi.com/static/img/back.png",
     },
   });
+
   const [deckIdResponse, setDeckIdResponse] = useState<any>();
+  const [suitMatch, setSuitMatch] = useState(0);
+  const [valueMatch, setValueMatch] = useState(0);
+  const [cardsLeft, setCardsLeft] = useState(52);
 
   useEffect(() => {
-    setDeckIdResponse(deck_id);
-  }, [deck_id]);
+    handleNewDeck();
+  }, []);
 
   const handleOnDraw = async () => {
     const deckofCards = await drawCards(deckIdResponse);
-    setCardData(deckofCards.cards.cards);
-    console.log(deckofCards);
-    deckofCards.cards.cards.map((card) => {});
+
+    setCardsLeft(deckofCards.cards.remaining);
+
+    const newCard = deckofCards.cards.cards[0];
+
+    setTestCard((prevState) => {
+      return {
+        cardOne: {
+          suit: prevState.cardTwo.suit,
+          value: prevState.cardTwo.value,
+          image: prevState.cardTwo.image,
+        },
+        cardTwo: {
+          suit: newCard.suit,
+          value: newCard.value,
+          image: newCard.image,
+        },
+      };
+    });
   };
 
   const handleNewDeck = async () => {
@@ -62,32 +76,34 @@ const TwoCardsInRow = (shuffledDeck: any) => {
     setDeckIdResponse(newDeck.cards.deck_id);
   };
 
-  console.log(testCard);
-
+  if (testCard.cardOne.suit !== "") {
+    const snapSuit = testCard.cardOne.suit === testCard.cardTwo.suit;
+    const snapValue = testCard.cardOne.value === testCard.cardTwo.value;
+    console.log(snapSuit);
+    console.log(snapValue);
+  }
+  console.log(valueMatch, suitMatch, cardsLeft);
   return (
-    <Styled.Body>
-      {JSON.stringify(cardData, 2, null)}
-      <Styled.CardContainer>
-        {cardData?.map((card, index) => {
-          return (
-            <CardComponent
-              image={card.image}
-              key={index}
-              title={card.title}
-              content={card.content}
-            />
-          );
-        })}
-      </Styled.CardContainer>
-      <Styled.ButtonsWrapper>
-        <button className="draw-button" onClick={handleOnDraw}>
-          Draw
-        </button>
-        <button className="new-button" onClick={handleNewDeck}>
-          New Deck
-        </button>
-      </Styled.ButtonsWrapper>
-    </Styled.Body>
+    <Body>
+      <CardContainer>
+        <CardComponent image={testCard.cardOne.image} />
+        <CardComponent image={testCard.cardTwo.image} />
+      </CardContainer>
+      <ToastContainer />
+      {cardsLeft !== 0 && (
+        <ButtonsWrapper>
+          <button className="draw-button" onClick={handleOnDraw}>
+            Draw
+          </button>
+          <button className="new-button" onClick={handleNewDeck}>
+            New Deck
+          </button>
+        </ButtonsWrapper>
+      )}
+      {cardsLeft === 0 && (
+        <h1>{`Suit Match ${suitMatch}, Value Match ${valueMatch}`}</h1>
+      )}
+    </Body>
   );
 };
 
