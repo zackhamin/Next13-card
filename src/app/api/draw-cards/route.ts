@@ -17,7 +17,7 @@ export async function POST(req: Request, res: NextApiResponse) {
       }
     );
     const cards = await shuffledDeck.json();
-    console.log(cards.cards);
+
     if (shuffledDeck.ok) {
       return NextResponse.json({ cards });
     } else {
