@@ -1,6 +1,5 @@
 import styled from "styled-components";
 
-// Styled components for the layout
 export const CardContainer = styled.div`
   display: flex;
   justify-content: space-around;
@@ -11,7 +10,6 @@ export const CardContainer = styled.div`
 export const Card = styled.div`
   display: flex;
   border-radius: 4px;
-  border: 1px solid black;
   padding: 2px;
   justify-content: center;
   align-items: center;

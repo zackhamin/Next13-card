@@ -1,7 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
 import { NextApiRequest, NextApiResponse } from "next";
-import { ZodError, z } from "zod";
 
 import { NextResponse } from "next/server";
 
@@ -18,7 +17,7 @@ export async function POST(req: Request, res: NextApiResponse) {
       }
     );
     const cards = await shuffledDeck.json();
-
+    console.log(cards.cards);
     if (shuffledDeck.ok) {
       return NextResponse.json({ cards });
     } else {

@@ -2,7 +2,7 @@ interface DrawCardsProps {
   deck_id: string;
 }
 
-export async function drawCards(deck_id: DrawCardsProps) {
+export const drawCards = async (deck_id: string) => {
   const response = await fetch(`/api/draw-cards/?deck_id=${deck_id}`, {
     method: "POST",
   });
@@ -12,4 +12,4 @@ export async function drawCards(deck_id: DrawCardsProps) {
   }
 
   return await response.json();
-}
+};

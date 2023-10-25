@@ -10,8 +10,6 @@ import {
 } from "./CardDisplay.styles";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Noto_Sans_Osmanya } from "next/font/google";
-import { isFunction } from "util";
 
 interface CardProps {
   image: any;
@@ -76,13 +74,17 @@ const TwoCardsInRow = () => {
     setDeckIdResponse(newDeck.cards.deck_id);
   };
 
-  if (testCard.cardOne.suit !== "") {
-    const snapSuit = testCard.cardOne.suit === testCard.cardTwo.suit;
-    const snapValue = testCard.cardOne.value === testCard.cardTwo.value;
-    console.log(snapSuit);
-    console.log(snapValue);
+  if (testCard.cardOne.value !== "") {
+    if (testCard.cardOne.suit === testCard.cardTwo.suit) {
+      toast("Suit Match");
+      // setSuitMatch(suitMatch + 1); // Update the count
+    }
+    if (testCard.cardOne.value === testCard.cardTwo.value) {
+      toast("Value Match");
+      //  setValueMatch(valueMatch + 1); // Update the count
+    }
   }
-  console.log(valueMatch, suitMatch, cardsLeft);
+
   return (
     <Body>
       <CardContainer>
@@ -90,6 +92,7 @@ const TwoCardsInRow = () => {
         <CardComponent image={testCard.cardTwo.image} />
       </CardContainer>
       <ToastContainer />
+
       {cardsLeft !== 0 && (
         <ButtonsWrapper>
           <button className="draw-button" onClick={handleOnDraw}>
